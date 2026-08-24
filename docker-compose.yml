@@ -1,0 +1,155 @@
+services:
+  raft-node-1:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - TZ=Asia/Shanghai
+      - RAFT_ID=n1
+      - RAFT_HTTP_ADDR=:8080
+      - RAFT_ADV_ADDR=raft-node-1:8080
+      - RAFT_DATA_DIR=/data
+      - RAFT_PEERS=n1=raft-node-1:8080,n2=raft-node-2:8080,n3=raft-node-3:8080,n4=raft-node-4:8080,n5=raft-node-5:8080
+      - RAFT_MODE=demo
+      - LOG_LEVEL=info
+    volumes:
+      - node1-data:/data
+    ports:
+      - "28372:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+      start_period: 8s
+    restart: unless-stopped
+
+  raft-node-2:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - TZ=Asia/Shanghai
+      - RAFT_ID=n2
+      - RAFT_HTTP_ADDR=:8080
+      - RAFT_ADV_ADDR=raft-node-2:8080
+      - RAFT_DATA_DIR=/data
+      - RAFT_PEERS=n1=raft-node-1:8080,n2=raft-node-2:8080,n3=raft-node-3:8080,n4=raft-node-4:8080,n5=raft-node-5:8080
+      - RAFT_MODE=demo
+      - LOG_LEVEL=info
+    volumes:
+      - node2-data:/data
+    ports:
+      - "28373:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+      start_period: 8s
+    restart: unless-stopped
+
+  raft-node-3:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - TZ=Asia/Shanghai
+      - RAFT_ID=n3
+      - RAFT_HTTP_ADDR=:8080
+      - RAFT_ADV_ADDR=raft-node-3:8080
+      - RAFT_DATA_DIR=/data
+      - RAFT_PEERS=n1=raft-node-1:8080,n2=raft-node-2:8080,n3=raft-node-3:8080,n4=raft-node-4:8080,n5=raft-node-5:8080
+      - RAFT_MODE=demo
+      - LOG_LEVEL=info
+    volumes:
+      - node3-data:/data
+    ports:
+      - "28374:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+      start_period: 8s
+    restart: unless-stopped
+
+  raft-node-4:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - TZ=Asia/Shanghai
+      - RAFT_ID=n4
+      - RAFT_HTTP_ADDR=:8080
+      - RAFT_ADV_ADDR=raft-node-4:8080
+      - RAFT_DATA_DIR=/data
+      - RAFT_PEERS=n1=raft-node-1:8080,n2=raft-node-2:8080,n3=raft-node-3:8080,n4=raft-node-4:8080,n5=raft-node-5:8080
+      - RAFT_MODE=demo
+      - LOG_LEVEL=info
+    volumes:
+      - node4-data:/data
+    ports:
+      - "28375:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+      start_period: 8s
+    restart: unless-stopped
+
+  raft-node-5:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - TZ=Asia/Shanghai
+      - RAFT_ID=n5
+      - RAFT_HTTP_ADDR=:8080
+      - RAFT_ADV_ADDR=raft-node-5:8080
+      - RAFT_DATA_DIR=/data
+      - RAFT_PEERS=n1=raft-node-1:8080,n2=raft-node-2:8080,n3=raft-node-3:8080,n4=raft-node-4:8080,n5=raft-node-5:8080
+      - RAFT_MODE=demo
+      - LOG_LEVEL=info
+    volumes:
+      - node5-data:/data
+    ports:
+      - "28376:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+      start_period: 8s
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: ./frontend-user
+      dockerfile: Dockerfile
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - "28371:80"
+    depends_on:
+      raft-node-1:
+        condition: service_healthy
+      raft-node-2:
+        condition: service_healthy
+      raft-node-3:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    restart: unless-stopped
+
+volumes:
+  node1-data:
+  node2-data:
+  node3-data:
+  node4-data:
+  node5-data:
