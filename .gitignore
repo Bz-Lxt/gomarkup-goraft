@@ -1,0 +1,47 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+/backend/bin/
+/backend/raftnode
+/backend/raftctl
+
+# Go
+backend/vendor/
+
+# Node
+frontend-user/node_modules/
+frontend-user/dist/
+frontend-user/.vite/
+
+# Data & coverage
+data/
+*.log
+coverage/
+backend/coverage.out
+GOCOVERDIR/
+
+# IDE / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Env
+.env
+.env.local
+
+# Playwright
+tests/playwright-report/
+tests/test-results/
+tests/node_modules/
+/docs/
+/.alkaid-sop
+/CLAUDE.md
+/AGENTS.md
+/.cursorrules
+/.github/
