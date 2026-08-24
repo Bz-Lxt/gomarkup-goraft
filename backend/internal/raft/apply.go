@@ -22,7 +22,9 @@ func (n *Node) maybeApply() {
 		var res any
 		var err error
 		if n.sm != nil && e.Type != raftpb.EntryNoop {
-			if applied, err := n.sm.Apply(uint64(e.Index), e.Type, e.Data); err == nil {
+			applied, applyErr := n.sm.Apply(uint64(e.Index), e.Type, e.Data)
+			err = applyErr
+			if err == nil {
 				res = applied
 			}
 		}
