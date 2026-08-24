@@ -28,21 +28,21 @@ func (n *Node) campaign() {
 		LastLogTerm:  n.log.LastTerm(),
 	}
 	sendTerm := n.hs.CurrentTerm
-	ctx, cancel := rpc.WithTimeout(context.Background(), n.cfg.RPCTimeout)
-	defer cancel()
 	for _, id := range n.conf.Voters {
 		if id == n.id {
 			continue
 		}
 		to := id
-		go n.sendVote(ctx, to, args, sendTerm)
+		go n.sendVote(to, args, sendTerm)
 	}
 }
 
-func (n *Node) sendVote(ctx context.Context, to raftpb.NodeID, args raftpb.RequestVoteArgs, sendTerm raftpb.Term) {
+func (n *Node) sendVote(to raftpb.NodeID, args raftpb.RequestVoteArgs, sendTerm raftpb.Term) {
 	if n.trans == nil {
 		return
 	}
+	ctx, cancel := rpc.WithTimeout(context.Background(), n.cfg.RPCTimeout)
+	defer cancel()
 	reply, err := n.trans.RequestVote(ctx, to, args)
 	n.do(func() {
 		if n.hs.CurrentTerm != sendTerm || n.state != raftpb.StateCandidate {
